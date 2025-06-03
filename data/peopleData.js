@@ -9,33 +9,32 @@ const peopleData = [
         title:"Heer"
     },
     {
-        title:"Ankur"
+        title:"Siddharth",
     },
     {
-        title:"Ajinkya",
+        title:"Aarav",
     },
     {
-        title:"Pratik"
+        title:"Rohan",
     },
     {
-        title:"Heer"
+        title:"Ananya",
     },
     {
-        title:"Ankur"
-    },{
-        title:"Ajinkya",
+        title:"Priya",
     },
     {
-        title:"Pratik"
+        title:"Rahul",
     },
     {
-        title:"Heer"
+        title:"Sneha",
     },
     {
-        title:"Ankur"
+        title:"Karan",
     },
-    
-    
+    {
+        title:"Neha",
+    },
 ]
 
 export default peopleData;

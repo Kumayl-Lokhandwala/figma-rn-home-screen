@@ -32,7 +32,7 @@ const UPIId = () => {
           <View style={styles.userIconWrapper}>
             <UserIcon style={styles.userIcon} text="PB" />
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate("Scanner")}>
+          <TouchableOpacity>
             <View style={styles.scannerWrapper}>
               <Scanner style={styles.scanner} />
             </View>
