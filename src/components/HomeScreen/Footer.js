@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import UPIYesBank from '../../../assets/svg/UPIYesBank'
+import UPIYesBank from '../../../assets/svg/icons/UPIYesBank'
 import MyAppText from '../MyAppText'
 
 const Footer = () => {

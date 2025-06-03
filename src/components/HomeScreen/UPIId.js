@@ -7,9 +7,9 @@ import {
 } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import UserIcon from "../../../assets/svg/UserIcon";
-import Scanner from "../../../assets/svg/Scanner";
-import CopyIcon from "../../../assets/svg/CopyIcon";
+import UserIcon from "../../../assets/svg/icons/UserIcon";
+import Scanner from "../../../assets/svg/icons/Scanner";
+import CopyIcon from "../../../assets/svg/icons/CopyIcon";
 import { useNavigation } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
 import { ToastAndroid, Platform, Alert } from "react-native";

@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import ZypeLogo from "../../../assets/svg/ZypeLogo";
-import NotificationIcon from "../../../assets/svg/NotificationIcon";
-import SettingsIcon from "../../../assets/svg/SettingsIcon";
+import ZypeLogo from "../../../assets/svg/icons/ZypeLogo";
+import NotificationIcon from "../../../assets/svg/icons/NotificationIcon";
+import SettingsIcon from "../../../assets/svg/icons/SettingsIcon";
 import { TouchableOpacity } from "react-native";
 
 const Header = () => {
