@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   iconContainer: {
-    widrh: 60,
+    width: 60,
     flexDirection: "row",
     gap: 20,
   },

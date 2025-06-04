@@ -17,7 +17,6 @@ export default Scanner
 
 const styles = StyleSheet.create({
     scanner:{
-        widht:200,
         height:200,
     }
 })

@@ -74,9 +74,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 25,
     marginHorizontal: 10,
+    justifyContent: 'space-between',
   },
   itemContainer: {
     alignItems: 'center',
+    justifyContent: 'center',
     width: 56,
   },
   iconCircle: {

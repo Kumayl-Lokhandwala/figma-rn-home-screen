@@ -13,7 +13,7 @@ const Transactions = () => {
       <View style={styles.headingContainer}>
         <MyAppText style={styles.text}>Recent Transactions</MyAppText>
         <TouchableOpacity>
-          <MyAppText style={{ fontSize: 12}}>View All {'>'}</MyAppText>
+          <MyAppText style={{ fontSize: 12, color: '#0099FF' }}>View All {'>'}</MyAppText>
         </TouchableOpacity>
       </View>
 

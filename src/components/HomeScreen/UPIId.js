@@ -123,18 +123,16 @@ const styles = StyleSheet.create({
   },
 
   textWrapper: {
-    backgroundColor: "#1C466A",
-    borderRadius: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    marginTop: 5,
-    minWidth: 220,
-    // REMOVE fixed height to let content size naturally
-    // height: 28 ❌ (remove this)
-    minHeight: 28, // ✅ ensures enough space
-  },
+  backgroundColor: "#1C466A",
+  borderRadius: 20,
+  flexDirection: "row",
+  alignItems: "center",
+  paddingVertical: 6,
+  paddingHorizontal: 10,
+  marginTop: 5,
+  alignSelf: "flex-start", // ← key: size to content instead of stretching
+},
+
 
   text: {
     color: "white",
