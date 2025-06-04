@@ -1,14 +1,16 @@
 import React, { useRef, useMemo, useCallback, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import BottomSheetComponent from '../../components/AnalyzeScreen/BottomSheetComponent';
 import { useNavigation } from '@react-navigation/native';
 import { Easing } from 'react-native-reanimated';
+import MyAppText from '../../components/MyAppText';
+import BottomSheetComponent from '../../components/AnalyzeScreen/BottomSheetComponent';
 
 const AnalyzeScreen = () => {
   // Declare sheetRef using useRef for BottomSheetModal
   const sheetRef = useRef(null);
-  
+
   // Access navigation for controlling the tab bar
   const navigation = useNavigation();
 
@@ -26,19 +28,25 @@ const AnalyzeScreen = () => {
   // Memoize animationConfigs to ensure immutability
   const animationConfigs = useMemo(() => ({
     duration: 300,
-    easing: Easing.linear, // Use simpler easing to avoid reduceMotion warning
+    easing: Easing.linear,
   }), []);
 
-  // Function to present the modal
+  // Function to present the modal with a slight delay
   const handlePresentModal = useCallback(() => {
-    // Hide tab bar before presenting modal
+    // Hide tab bar immediately
     navigation.setOptions({
       tabBarStyle: {
         ...defaultTabBarStyle,
         display: 'none',
       },
     });
-    sheetRef.current?.present();
+
+    // Add slight delay to ensure navigation update completes
+    setTimeout(() => {
+      if (sheetRef.current) {
+        sheetRef.current.present();
+      }
+    }, 50);
   }, [navigation, defaultTabBarStyle]);
 
   // Handle modal dismiss to restore tab bar
@@ -51,7 +59,7 @@ const AnalyzeScreen = () => {
     });
   }, [navigation, defaultTabBarStyle]);
 
-  // Ensure tab bar is visible on initial render
+  // Ensure tab bar is visible on initial render and reset modal state
   useEffect(() => {
     navigation.setOptions({
       tabBarStyle: {
@@ -59,39 +67,62 @@ const AnalyzeScreen = () => {
         display: 'flex',
       },
     });
+
+    // Reset modal state on mount to prevent stale references
+    return () => {
+      if (sheetRef.current) {
+        sheetRef.current.close();
+      }
+    };
   }, [navigation, defaultTabBarStyle]);
 
   return (
     <BottomSheetModalProvider>
-      <View style={{ flex: 1, backgroundColor: '#02111A' }}>
-        {/* Trigger to open the modal */}
-        <Text
-          onPress={handlePresentModal}
-          style={{
-            padding: 20,
-            fontSize: 18,
-            color: '#0099FF',
-            fontFamily: 'Poppins-Regular',
-          }}
-        >
-          Open Bottom Sheet Modal
-        </Text>
+      <SafeAreaView style={styles.container}>
+        <MyAppText style={styles.text}>AnalyzeScreen</MyAppText>
+        <TouchableOpacity onPress={handlePresentModal} style={styles.triggerButton}>
+          <MyAppText style={styles.triggerText}>Open Bottom Sheet Modal</MyAppText>
+        </TouchableOpacity>
         <BottomSheetModal
           ref={sheetRef}
           snapPoints={snapPoints}
-          onChange={() => {}} // Empty to avoid unnecessary updates
+          onChange={() => {}}
           onDismiss={handleDismiss}
           animationConfigs={animationConfigs}
           enableContentPanningGesture={true}
           enableHandlePanningGesture={true}
           backgroundStyle={{ backgroundColor: '#02111A' }}
           handleIndicatorStyle={{ backgroundColor: '#FFFFFF' }}
+          enablePanDownToClose={true} // Allow drag-to-close
         >
           <BottomSheetComponent sheetRef={sheetRef} />
         </BottomSheetModal>
-      </View>
+      </SafeAreaView>
     </BottomSheetModalProvider>
   );
 };
 
 export default AnalyzeScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#02111A',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 24,
+    color: '#FFFFFF',
+    fontFamily: 'Poppins-Regular',
+    marginTop: 20,
+  },
+  triggerButton: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  triggerText: {
+    fontSize: 18,
+    color: '#0099FF',
+    fontFamily: 'Poppins-Regular',
+  },
+});

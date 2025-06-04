@@ -2,15 +2,15 @@ import { StyleSheet, View, ScrollView } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MyAppText from "../../components/MyAppText";
-import Header from "../../components/HomeScreen/Header";
+import Header from "../../components/UPIScreen/Header";
 import { LinearGradient } from "expo-linear-gradient";
-import UPIId from "../../components/HomeScreen/UPIId";
-import Utility from "../../components/HomeScreen/Utility";
-import Scanner from "../../components/HomeScreen/Scanner";
-import People from "../../components/HomeScreen/People";
-import Business from "../../components/HomeScreen/Business";
-import Footer from "../../components/HomeScreen/Footer";
-import Transactions from "../../components/HomeScreen/Transactions";
+import UPIId from "../../components/UPIScreen/UPIId";
+import Utility from "../../components/UPIScreen/Utility";
+import Scanner from "../../components/UPIScreen/Scanner";
+import People from "../../components/UPIScreen/People";
+import Business from "../../components/UPIScreen/Business";
+import Footer from "../../components/UPIScreen/Footer";
+import Transactions from "../../components/UPIScreen/Transactions";
 
 const UPIScreen = () => {
   return (
