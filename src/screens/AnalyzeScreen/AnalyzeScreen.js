@@ -119,6 +119,10 @@ const styles = StyleSheet.create({
   triggerButton: {
     padding: 20,
     alignItems: 'center',
+    backgroundColor: '#02111A',
+    borderRadius: 10,
+    borderColor: '#0099FF',
+    borderWidth: 1,
   },
   triggerText: {
     fontSize: 18,

@@ -1,38 +1,34 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import MyAppText from '../MyAppText';
+import SearchIcon from '../../../assets/svg/icons/SearchIcon';
 
-const BottomSheetHomeComponent = ({ sheetRef }) => {
-  // State for text input
-  const [inputText, setInputText] = useState('');
+const BottomSheetHomeComponent = ({ searchQuery, setSearchQuery, sheetRef }) => {
 
-  // Handler for Close button
   const handleClose = () => {
     sheetRef.current?.dismiss();
   };
 
-  // Handler for text input changes
-  const handleTextChange = (text) => {
-    setInputText(text);
-    console.log('Input text:', text); // Replace with your logic
+  const handleBlur = () => {
+    sheetRef.current?.snapToIndex(0);
   };
 
   return (
     <View style={styles.container}>
-      <MyAppText style={styles.header}>Home Screen Modal</MyAppText>
-      <BottomSheetTextInput
-        style={styles.textInput}
-        placeholder="Enter text here"
-        placeholderTextColor="#888888"
-        value={inputText}
-        onChangeText={handleTextChange}
-      />
-      <TouchableOpacity onPress={handleClose}>
-        <View style={styles.button}>
-          <MyAppText style={styles.buttonText}>Close</MyAppText>
-        </View>
-      </TouchableOpacity>
+      <View style={styles.searchWrapper}>
+        <SearchIcon style={styles.searchIcon} />
+        <BottomSheetTextInput
+          style={styles.textInput}
+          placeholder="Search by bank name"
+          placeholderTextColor="white"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onBlur={handleBlur}
+          returnKeyType="done"
+          
+        />
+      </View>
     </View>
   );
 };
@@ -41,41 +37,30 @@ export default BottomSheetHomeComponent;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#02111A',
-    padding: 20,
+    paddingTop: 20,
   },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+  searchWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#02111A',
+    borderColor: '#0099FF',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    width: '95%',
     marginBottom: 20,
-    textAlign: 'center',
-    fontFamily: 'Poppins-Bold',
+  },
+  searchIcon: {
+    marginRight: 8,
   },
   textInput: {
-    width: '80%',
-    backgroundColor: '#333333',
+    flex: 1,
     color: '#FFFFFF',
     fontFamily: 'Poppins-Regular',
     fontSize: 16,
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  button: {
-    width: 100,
-    backgroundColor: '#0099FF',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: 16,
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontFamily: 'Poppins-Regular',
+    paddingVertical: 10,
   },
 });
