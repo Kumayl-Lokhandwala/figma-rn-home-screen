@@ -1,23 +1,34 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, BackHandler } from 'react-native';
 import MyAppText from '../../components/MyAppText';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
-const BankDetailsScreen = ({ route }) => {
+const BankDetailsScreen = ({ route, sheetRef, navigation }) => {
   const { bank } = route.params;
+
+  // Handle back button in BankDetailsScreen
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      navigation.navigate('BottomSheetHome'); // Navigate back to BottomSheetHome
+      return true; // Prevent default back action
+    });
+
+    return () => backHandler.remove();
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       {bank.icon}
       <MyAppText style={styles.title}>{bank.title}</MyAppText>
       <BottomSheetTextInput
-        placeholder='Enter Account Number'
+        placeholder="Enter Account Number"
         style={styles.textInput}
-        placeholderTextColor={"white"}
+        placeholderTextColor="white"
       />
       <BottomSheetTextInput
-        placeholder='Enter IFSC Code'
+        placeholder="Enter IFSC Code"
         style={styles.textInput}
-        placeholderTextColor={"white"}
+        placeholderTextColor="white"
       />
     </View>
   );
@@ -31,8 +42,8 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    width: '100%',           // ensures horizontal fill
-    minHeight: '100%',       // ensures vertical fill inside modal
+    width: '100%',
+    minHeight: '100%',
   },
   title: {
     color: '#fff',
@@ -41,12 +52,12 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: '#fff',
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     borderWidth: 1,
     borderColor: '#0099FF',
     borderRadius: 10,
     width: '80%',
     padding: 10,
     marginTop: 20,
-  }
+  },
 });

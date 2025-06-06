@@ -1,4 +1,3 @@
-// BottomSheetStack.js
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import BankDetailsScreen from '../screens/BankDetailsScreen/BankDetailsScreen';
@@ -9,8 +8,7 @@ const Stack = createStackNavigator();
 const BottomSheetStack = ({ searchQuery, setSearchQuery, sheetRef }) => (
   <Stack.Navigator
     screenOptions={{
-      headerShown: false, // Hide headers for a modal feel
-      // You can customize transitions here if needed
+      headerShown: false,
     }}
   >
     <Stack.Screen
@@ -26,9 +24,14 @@ const BottomSheetStack = ({ searchQuery, setSearchQuery, sheetRef }) => (
     />
     <Stack.Screen
       name="BankDetails"
-      component={BankDetailsScreen}
+      children={({ navigation, route }) => (
+        <BankDetailsScreen
+          route={route}
+          sheetRef={sheetRef}
+          navigation={navigation}
+        />
+      )}
     />
-    {/* Add more screens as needed */}
   </Stack.Navigator>
 );
 

@@ -1,8 +1,7 @@
-import { View } from "react-native";
-import BottomSheetHomeComponent from "../../components/HomeScreen/BottomSheetHomeComponent";
-import PopularBanks from "../../components/HomeScreen/PopularBanks";
-import AllBanks from "../../components/HomeScreen/AllBanks";
-
+import { View } from 'react-native';
+import BottomSheetHomeComponent from '../../components/HomeScreen/BottomSheetHomeComponent';
+import PopularBanks from '../../components/HomeScreen/PopularBanks';
+import AllBanks from '../../components/HomeScreen/AllBanks';
 
 const BottomSheetHomeScreen = ({ searchQuery, setSearchQuery, sheetRef, navigation }) => (
   <View style={{ flex: 1, backgroundColor: '#02111A' }}>

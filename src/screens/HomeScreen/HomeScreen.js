@@ -1,31 +1,48 @@
 import React, { useRef, useMemo, useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { useNavigation } from '@react-navigation/native';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Easing } from 'react-native-reanimated';
+import Animated, { Extrapolate, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useBackHandler } from '@react-native-community/hooks';
-import BottomSheetHomeComponent from '../../components/HomeScreen/BottomSheetHomeComponent';
 import MyAppText from '../../components/MyAppText';
-import PopularBanks from '../../components/HomeScreen/PopularBanks';
-import AllBanks from '../../components/HomeScreen/AllBanks';
 import BottomSheetStack from '../../stacks/BottomSheetStack';
 
-const BackdropComponent = ({ onPress }) => (
-  <TouchableOpacity
-    style={styles.backdrop}
-    activeOpacity={0.8}
-    onPress={onPress}
-  />
-);
+// Animated Backdrop Component
+const BackdropComponent = ({ style, animatedIndex, onPress }) => {
+  const animatedStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      animatedIndex.value,
+      [-1, 0, 1],
+      [0, 0.5, 0.5],
+      Extrapolate.CLAMP
+    );
+    return { opacity };
+  });
+
+  return (
+    <TouchableOpacity
+      style={[style, styles.backdrop]}
+      activeOpacity={0.8}
+      onPress={onPress}
+      accessibilityLabel="Close bottom sheet"
+      accessibilityRole="button"
+    >
+      <Animated.View style={[styles.overlay, animatedStyle]} />
+    </TouchableOpacity>
+  );
+};
 
 const HomeScreen = () => {
   const sheetRef = useRef(null);
   const navigation = useNavigation();
+  const route = useRoute();
   const [searchQuery, setSearchQuery] = useState('');
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Derived state for search query: only pass query if length >= 3
+  // Derived state for search query
   const filteredSearchQuery = useMemo(() => {
     return searchQuery.length >= 3 ? searchQuery : '';
   }, [searchQuery]);
@@ -47,13 +64,14 @@ const HomeScreen = () => {
     navigation.setOptions({
       tabBarStyle: {
         ...defaultTabBarStyle,
-        display: 'none', // Hide tab bar when opening bottom sheet
+        display: 'none',
       },
     });
     setTimeout(() => {
       if (sheetRef.current) {
         sheetRef.current.present();
-        sheetRef.current.snapToIndex(0); // Ensure initial snap point
+        sheetRef.current.snapToIndex(0);
+        setIsModalOpen(true);
       }
     }, 50);
   }, [navigation, defaultTabBarStyle]);
@@ -62,30 +80,43 @@ const HomeScreen = () => {
     navigation.setOptions({
       tabBarStyle: {
         ...defaultTabBarStyle,
-        display: 'flex', // Show tab bar only on dismiss
+        display: 'flex',
       },
     });
-    setSearchQuery(''); // Clear search on dismiss
-    Keyboard.dismiss(); // Ensure keyboard is dismissed
+    setSearchQuery('');
+    setIsModalOpen(false);
+    Keyboard.dismiss();
   }, [navigation, defaultTabBarStyle]);
 
-  // Handle backdrop press to close bottom sheet
   const handleBackdropPress = useCallback(() => {
     if (sheetRef.current) {
-      sheetRef.current.close(); // Close bottom sheet, triggering onDismiss
+      sheetRef.current.close();
     }
   }, []);
 
   // Handle system back gesture
   useBackHandler(() => {
-    if (sheetRef.current && (isKeyboardVisible || searchQuery)) {
-      Keyboard.dismiss(); // Dismiss keyboard
-      sheetRef.current.snapToIndex(0); // Snap to 50%
-      setSearchQuery(''); // Clear search query
-      // Do NOT restore tab bar here; keep it hidden
+    // Get the current route name from the nested stack navigator
+    const currentRoute = navigation.getState()?.routes[navigation.getState().index]?.state?.routes?.slice(-1)[0]?.name;
+
+    if (isModalOpen && sheetRef.current) {
+      if (currentRoute === 'BankDetails') {
+        // Navigate back to BottomSheetHome within the modal
+        navigation.navigate('BottomSheetHome');
+        return true; // Prevent default back action
+      } else {
+        // Close the modal if not on BankDetailsScreen
+        sheetRef.current.close();
+        return true; // Prevent default back action
+      }
+    }
+    if (isKeyboardVisible || searchQuery) {
+      Keyboard.dismiss();
+      sheetRef.current?.snapToIndex(0);
+      setSearchQuery('');
       return true; // Prevent default back action
     }
-    return false; // Allow default back action if bottom sheet is not open
+    return false; // Allow default back action if modal is not open
   });
 
   // Listen for keyboard events
@@ -96,9 +127,8 @@ const HomeScreen = () => {
     const keyboardDidHide = Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardVisible(false);
       if (sheetRef.current) {
-        sheetRef.current.snapToIndex(0); // Snap to 50% when keyboard hides
-        setSearchQuery(''); // Clear search query
-        // Do NOT restore tab bar here; keep it hidden
+        sheetRef.current.snapToIndex(0);
+        setSearchQuery('');
       }
     });
 
@@ -113,7 +143,7 @@ const HomeScreen = () => {
     navigation.setOptions({
       tabBarStyle: {
         ...defaultTabBarStyle,
-        display: 'flex', // Initial state: tab bar visible
+        display: 'flex',
       },
     });
     return () => {
@@ -131,25 +161,29 @@ const HomeScreen = () => {
           <MyAppText style={styles.triggerText}>Open Bottom Sheet Modal</MyAppText>
         </TouchableOpacity>
         <BottomSheetModal
-  ref={sheetRef}
-  snapPoints={snapPoints}
-  onDismiss={handleDismiss}
-  animationConfigs={animationConfigs}
-  enableContentPanningGesture
-  enableHandlePanningGesture
-  backgroundStyle={styles.bottomSheetBackground}
-  handleIndicatorStyle={styles.handleIndicator}
-  enablePanDownToClose
-  backdropComponent={(props) => <BackdropComponent {...props} onPress={handleBackdropPress} />}
->
-  <View style={{ flex: 1, backgroundColor: '#02111A' }}>
-    <BottomSheetStack
-      searchQuery={searchQuery}
-      setSearchQuery={setSearchQuery}
-      sheetRef={sheetRef}
-    />
-  </View>
-</BottomSheetModal>
+          ref={sheetRef}
+          snapPoints={snapPoints}
+          onDismiss={handleDismiss}
+          animationConfigs={animationConfigs}
+          enableContentPanningGesture
+          enableHandlePanningGesture
+          backgroundStyle={styles.bottomSheetBackground}
+          handleIndicatorStyle={styles.handleIndicator}
+          enablePanDownToClose
+          backdropComponent={(props) => (
+            <BackdropComponent
+              {...props}
+              animatedIndex={props.animatedIndex}
+              onPress={handleBackdropPress}
+            />
+          )}
+        >
+          <BottomSheetStack
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            sheetRef={sheetRef}
+          />
+        </BottomSheetModal>
       </SafeAreaView>
     </BottomSheetModalProvider>
   );
@@ -194,12 +228,11 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     marginTop: 8,
   },
-  bottomSheetContent: {
-    flex: 1,
-    backgroundColor: '#02111A',
-  },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0,0.5)', // Semi-transparent black backdrop
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
