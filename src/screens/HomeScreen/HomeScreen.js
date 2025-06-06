@@ -9,6 +9,7 @@ import BottomSheetHomeComponent from '../../components/HomeScreen/BottomSheetHom
 import MyAppText from '../../components/MyAppText';
 import PopularBanks from '../../components/HomeScreen/PopularBanks';
 import AllBanks from '../../components/HomeScreen/AllBanks';
+import BottomSheetStack from '../../stacks/BottomSheetStack';
 
 const BackdropComponent = ({ onPress }) => (
   <TouchableOpacity
@@ -23,6 +24,11 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  // Derived state for search query: only pass query if length >= 3
+  const filteredSearchQuery = useMemo(() => {
+    return searchQuery.length >= 3 ? searchQuery : '';
+  }, [searchQuery]);
 
   const snapPoints = useMemo(() => ['50%', '75%'], []);
   const defaultTabBarStyle = useMemo(() => ({
@@ -125,23 +131,25 @@ const HomeScreen = () => {
           <MyAppText style={styles.triggerText}>Open Bottom Sheet Modal</MyAppText>
         </TouchableOpacity>
         <BottomSheetModal
-          ref={sheetRef}
-          snapPoints={snapPoints}
-          onDismiss={handleDismiss}
-          animationConfigs={animationConfigs}
-          enableContentPanningGesture
-          enableHandlePanningGesture
-          backgroundStyle={styles.bottomSheetBackground}
-          handleIndicatorStyle={styles.handleIndicator}
-          enablePanDownToClose
-          backdropComponent={(props) => <BackdropComponent {...props} onPress={handleBackdropPress} />}
-        >
-          <BottomSheetScrollView style={styles.bottomSheetContent}>
-            <BottomSheetHomeComponent searchQuery={searchQuery} setSearchQuery={setSearchQuery} sheetRef={sheetRef} />
-            <PopularBanks searchQuery={searchQuery} />
-            <AllBanks searchQuery={searchQuery} />
-          </BottomSheetScrollView>
-        </BottomSheetModal>
+  ref={sheetRef}
+  snapPoints={snapPoints}
+  onDismiss={handleDismiss}
+  animationConfigs={animationConfigs}
+  enableContentPanningGesture
+  enableHandlePanningGesture
+  backgroundStyle={styles.bottomSheetBackground}
+  handleIndicatorStyle={styles.handleIndicator}
+  enablePanDownToClose
+  backdropComponent={(props) => <BackdropComponent {...props} onPress={handleBackdropPress} />}
+>
+  <View style={{ flex: 1, backgroundColor: '#02111A' }}>
+    <BottomSheetStack
+      searchQuery={searchQuery}
+      setSearchQuery={setSearchQuery}
+      sheetRef={sheetRef}
+    />
+  </View>
+</BottomSheetModal>
       </SafeAreaView>
     </BottomSheetModalProvider>
   );
@@ -192,6 +200,6 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black backdrop
+    backgroundColor: 'rgba(0, 0,0.5)', // Semi-transparent black backdrop
   },
 });

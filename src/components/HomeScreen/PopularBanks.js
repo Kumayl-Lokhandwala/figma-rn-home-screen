@@ -4,7 +4,7 @@ import MyAppText from "../MyAppText";
 import popularBanksData from "../../../data/popularBanksData";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 
-const PopularBanks = ({ searchQuery }) => {
+const PopularBanks = ({ searchQuery, navigation }) => {
   const filteredData = popularBanksData.filter((item) =>
     item.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -22,11 +22,13 @@ const PopularBanks = ({ searchQuery }) => {
             key={index}
             style={[
               styles.itemWrapper,
-              // Remove right margin on every 4th item
               (index + 1) % 4 === 0 && { marginRight: 0 },
             ]}
           >
-            <TouchableOpacity style={styles.item}>
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() => navigation.navigate('BankDetails', { bank: item })}
+            >
               {item.icon}
             </TouchableOpacity>
             <MyAppText style={styles.label}>{item.title}</MyAppText>
@@ -44,6 +46,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 10,
     borderRadius: 12,
+    backgroundColor: "#02111A",
   },
   headerText: {
     fontSize: 16,

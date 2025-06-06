@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import allBanksData from '../../../data/allBanksData';
 import MyAppText from '../MyAppText';
 
-const AllBanks = ({ searchQuery }) => {
+const AllBanks = ({ searchQuery, navigation }) => {
   const filteredBanks = allBanksData.filter((item) =>
     item.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -22,7 +22,10 @@ const AllBanks = ({ searchQuery }) => {
       <MyAppText style={styles.headerText}>All Banks</MyAppText>
       <ScrollView style={{ maxHeight: 300 }}>
         {filteredBanks.map((item, index) => (
-          <TouchableOpacity key={index}>
+          <TouchableOpacity
+            key={index}
+            onPress={() => navigation.navigate('BankDetails', { bank: item })}
+          >
             <View style={styles.itemContainer}>
               {item.icon}
               <View style={styles.textWrapper}>
